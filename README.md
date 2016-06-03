@@ -45,6 +45,44 @@ NOTICE: You won't need this package in your production bundle, so you can exclud
 | Prop  | Default  | Type | Description |
 | :------------ |:---------------:| :---------------:| :-----|
 | viewportChanged | `undefined` |`func` | Callback triggered when the viewport changes, either by changing device or rotating. |
+| config | `undefined` |`object` | Device screens configuration. |
+
+### config (prop)
+
+You can pass whatever device screen sizes you need (useful for android sizes).
+
+```
+    // these are not real measure!!!!
+
+    render() {
+        return (
+            <LayoutTester
+                config={
+                    {
+                        nexus4: {
+                            label: "Nexus 4",
+                            width: 364,
+                            height: 640
+                        },
+                        motog: {
+                            label: "Moto G",
+                            width: 396,
+                            height: 640
+                        }
+                    }
+                }
+            >
+                <Provider store={ store }>
+                    <Router
+                        initialRoute={ this._initialRoute }
+                        ref={ this._setRouter }
+                    />
+                </Provider>
+            </LayoutTester>
+        );
+    }
+```
+
 
 ## Known Issues
 
@@ -53,4 +91,3 @@ NOTICE: You won't need this package in your production bundle, so you can exclud
 ## TODO
 
 - Haven't yet tested it in Android
-- Receive possible viewport sizes through props
