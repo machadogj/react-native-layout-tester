@@ -2,7 +2,7 @@
 
 Use an iPad to test your component's layout in different iPhone sizes.
 
-![Layout Tester](https://raw.githubusercontent.com/machadogj/react-native-layout-tester/master/layout-tester-sample.gif =250x)
+![Layout Tester](https://raw.githubusercontent.com/machadogj/react-native-layout-tester/master/layout-tester-sample.gif)
 
 
 ## Installation
@@ -36,7 +36,7 @@ import LayoutTester from "react-native-layout-tester";
 
 Then run you application in the iPad Air simulator (it has enough width to accomodate an iPhone 6+ logical resolution in landscape mode). In order to accomplish this, you will have to set up your xcode solution to "Universal".
 
-![xcode universal](https://raw.githubusercontent.com/machadogj/react-native-layout-tester/master/layout-tester-sample.png)
+![xcode universal](https://raw.githubusercontent.com/machadogj/react-native-layout-tester/master/xcode-universal.png)
 
 NOTICE: You won't need this package in your production bundle, so you can exclude this package by simply not importing it in any file.
 
