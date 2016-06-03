@@ -1,0 +1,11 @@
+{
+  "name": "react-native-layout-tester",
+  "version": "1.0.1",
+  "description": "Run your app in an iPad simulator and emulate different iPhone screen sizes to test your layouts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gustavo Machado (machadogj@gmail.com)",
+  "license": "MIT"
+}
