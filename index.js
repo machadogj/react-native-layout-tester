@@ -8,47 +8,57 @@ import React, {
 
 import styles from "./styles";
 
-let config = {
-    iphone5: {
-        label: "iPhone 5",
-        width: 320,
-        height: 568
-    },
-    iphone6: {
-        label: "iPhone 6",
-        width: 375,
-        height: 667
-    },
-    iphone6plus: {
-        label: "iPhone 6+",
-        width: 414,
-        height: 736
-    }
-};
-
 export default class LayoutTester extends Component {
 
     static displayName = "LayoutTester";
 
     static propTypes = {
         children: PropTypes.node,
+        config: PropTypes.object,
         viewportChanged: PropTypes.func
     };
 
-    state = {
-        mode: "iphone6",
-        portrait: true,
-        viewport: {
-            height: config["iphone6"].height,
-            width: config["iphone6"].width
+    static defaultProps = {
+        config: {
+            iphone5: {
+                label: "iPhone 5",
+                width: 320,
+                height: 568
+            },
+            iphone6: {
+                label: "iPhone 6",
+                width: 375,
+                height: 667
+            },
+            iphone6plus: {
+                label: "iPhone 6+",
+                width: 414,
+                height: 736
+            }
         }
     };
+
+    state = {
+        portrait: true
+    };
+
+    componentWillMount() {
+        let config = this.props.config;
+        let mode = Object.keys(config)[0];
+        this.setState({
+            mode: mode,
+            viewport: {
+                height: config[mode].height,
+                width: config[mode].width
+            }
+        });
+    }
 
     handleSelection(mode, portrait) {
         if (this.state.mode === mode && this.state.portrait === portrait) {
             return;
         }
-        let { height, width } = config[mode];
+        let { height, width } = this.props.config[mode];
         let viewport = portrait ? { height, width } : { height : width, width  : height };
         let newState = {
             mode,
@@ -67,24 +77,28 @@ export default class LayoutTester extends Component {
     }
 
     renderButton(mode) {
-        let deviceSize = config[mode];
+        let deviceSize = this.props.config[mode];
         let selected = this.state.mode === mode ? styles.selectedButton : {};
         return (
             <TouchableOpacity onPress={ ()=> this.handleSelection(mode, this.state.portrait) }>
-                <Text style={ [ styles.button, selected ] }>{ `${config[mode].label}\n(${deviceSize.width}x${deviceSize.height})` }</Text>
+                <Text style={ [ styles.button, selected ] }>{ `${this.props.config[mode].label}\n(${deviceSize.width}x${deviceSize.height})` }</Text>
             </TouchableOpacity>
         );
     }
 
     render() {
         let { viewport } = this.state;
-        
+        let buttons = Object.keys(this.props.config).map(k => {
+            return (
+                <View key={ k }>
+                    { this.renderButton(k) }
+                </View>
+            );
+        });
         return (
             <View style={ [ styles.container ] }>
                 <View style={ styles.buttons }>
-                    { this.renderButton("iphone5") }
-                    { this.renderButton("iphone6") }
-                    { this.renderButton("iphone6plus") }
+                    { buttons }
                 </View>
                 <View style={ styles.body }>
                     <View style={ [ styles.viewport, viewport ] }>
