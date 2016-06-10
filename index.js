@@ -6,6 +6,9 @@ import {
 } from "react-native";
 
 import styles from "./styles";
+import getLayout from './getLayout';
+
+export { getLayout };
 
 export default class LayoutTester extends Component {
 
@@ -40,6 +43,16 @@ export default class LayoutTester extends Component {
     state = {
         portrait: true
     };
+
+    static childContextTypes = {
+      layoutTesterState: PropTypes.object
+    };
+
+    getChildContext() {
+        return {
+            layoutTesterState: this.state
+        };
+    }
 
     componentWillMount() {
         let config = this.props.config;
