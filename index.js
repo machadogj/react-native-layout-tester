@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+    Dimensions,
     Text,
     TouchableOpacity,
     View
@@ -54,11 +55,16 @@ export default class LayoutTester extends Component {
     constructor(props) {
         super(props);
         if (props.noTestWrapConfig) {
+            let deviceDimensions = Dimensions.get("window");
             let { mode, width, height, portrait } = props.noTestWrapConfig;
+            if (!mode) mode = 'default';
+            if (!width) width = deviceDimensions.width;
+            if (!height) height = deviceDimensions.height;
+            portrait = width <= height;
             this.state = {
                 mode,
                 viewport: { width, height },
-                portrait: !!portrait
+                portrait: portrait
             };
         } else {
             this.state = { portrait: true };
