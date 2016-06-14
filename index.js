@@ -4,8 +4,12 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
+import shallowEqual from 'shallowequal';
 
 import styles from "./styles";
+import getLayout from './getLayout';
+
+export { getLayout };
 
 export default class LayoutTester extends Component {
 
@@ -14,6 +18,12 @@ export default class LayoutTester extends Component {
     static propTypes = {
         children: PropTypes.node,
         config: PropTypes.object,
+        noTestWrapConfig: PropTypes.shape({
+            mode: PropTypes.string.isRequired,
+            width: PropTypes.number.isRequired,
+            height: PropTypes.number.isRequired,
+            portrait: PropTypes.bool,
+        }),
         viewportChanged: PropTypes.func
     };
 
@@ -37,19 +47,64 @@ export default class LayoutTester extends Component {
         }
     };
 
-    state = {
-        portrait: true
+    static childContextTypes = {
+      layoutTesterState: PropTypes.object
     };
 
+    constructor(props) {
+        super(props);
+        if (props.noTestWrapConfig) {
+            let { mode, width, height, portrait } = props.noTestWrapConfig;
+            this.state = {
+                mode,
+                viewport: { width, height },
+                portrait: !!portrait
+            };
+        } else {
+            this.state = { portrait: true };
+        }
+    }
+
+    getChildContext() {
+        return {
+            layoutTesterState: this.state
+        };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (shallowEqual(this.props.noTestWrapConfig, nextProps.noTestWrapConfig)) return;
+
+        if (!nextProps.noTestWrapConfig) {
+            let config = this.props.config;
+            let mode = Object.keys(config)[0];
+            this.setDefaultConfig(mode, config[mode]);
+            return;
+        }
+
+        let { mode, width, height, portrait } = nextProps.noTestWrapConfig;
+        this.setDefaultConfig(mode, {
+            width,
+            height,
+            portrait
+        });
+    }
+
     componentWillMount() {
+        if (this.props.noTestWrapConfig) return;
+
         let config = this.props.config;
         let mode = Object.keys(config)[0];
+        this.setDefaultConfig(mode, config[mode]);
+    }
+
+    setDefaultConfig(mode, config) {
         this.setState({
             mode: mode,
             viewport: {
-                height: config[mode].height,
-                width: config[mode].width
-            }
+                height: config.height,
+                width: config.width
+            },
+            portrait: config.portrait || this.state.portrait
         });
     }
 
@@ -58,7 +113,7 @@ export default class LayoutTester extends Component {
             return;
         }
         let { height, width } = this.props.config[mode];
-        let viewport = portrait ? { height, width } : { height : width, width  : height };
+        let viewport = portrait ? { height, width } : { height: width, width: height };
         let newState = {
             mode,
             viewport,
@@ -86,6 +141,10 @@ export default class LayoutTester extends Component {
     }
 
     render() {
+        if (this.props.noTestWrapConfig) {
+            return this.props.children;
+        }
+
         let { viewport } = this.state;
         let buttons = Object.keys(this.props.config).map(k => {
             return (
