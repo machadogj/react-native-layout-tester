@@ -7,5 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Gustavo Machado (machadogj@gmail.com)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "hoist-non-react-statics": "^1.0.6",
+    "shallowequal": "^0.2.2"
+  }
 }
