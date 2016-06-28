@@ -49,8 +49,11 @@ export default class LayoutTester extends Component {
     };
 
     static childContextTypes = {
-      layoutTesterState: PropTypes.object
+      layoutTesterState: PropTypes.object,
+      subscribeLayout: PropTypes.func
     };
+
+    listeners = [];
 
     constructor(props) {
         super(props);
@@ -73,7 +76,25 @@ export default class LayoutTester extends Component {
 
     getChildContext() {
         return {
-            layoutTesterState: this.state
+            layoutTesterState: this.state,
+            subscribeLayout: listener => {
+                if (typeof listener !== 'function') {
+                  throw new Error('Expected listener to be a function.');
+                }
+
+                let isSubscribed = true;
+
+                this.listeners.push(listener);
+
+                return () => {
+                    if (!isSubscribed) return;
+
+                    isSubscribed = false;
+
+                    let index = this.listeners.indexOf(listener);
+                    this.listeners.splice(index, 1);
+                };
+            }
         };
     }
 
@@ -104,14 +125,16 @@ export default class LayoutTester extends Component {
     }
 
     setDefaultConfig(mode, config) {
-        this.setState({
+        let newState = {
             mode: mode,
             viewport: {
                 height: config.height,
                 width: config.width
             },
             portrait: config.portrait || this.state.portrait
-        });
+        };
+        this.setState(newState);
+        this.listeners.forEach(listener => listener(newState));
     }
 
     handleSelection(mode, portrait) {
@@ -130,6 +153,7 @@ export default class LayoutTester extends Component {
                 this.props.viewportChanged(newState);
             }
         });
+        this.listeners.forEach(listener => listener(newState));
     }
 
     handleRotate() {
