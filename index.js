@@ -49,7 +49,7 @@ export default class LayoutTester extends Component {
     };
 
     static childContextTypes = {
-      layoutTesterState: PropTypes.object,
+      getLayoutTesterState: PropTypes.func,
       subscribeLayout: PropTypes.func
     };
 
@@ -76,7 +76,7 @@ export default class LayoutTester extends Component {
 
     getChildContext() {
         return {
-            layoutTesterState: this.state,
+            getLayoutTesterState: () => this.getState(),
             subscribeLayout: listener => {
                 if (typeof listener !== 'function') {
                   throw new Error('Expected listener to be a function.');
@@ -93,7 +93,7 @@ export default class LayoutTester extends Component {
 
                     let index = this.listeners.indexOf(listener);
                     this.listeners.splice(index, 1);
-                };
+                }
             }
         };
     }
@@ -124,6 +124,18 @@ export default class LayoutTester extends Component {
         this.setDefaultConfig(mode, config[mode]);
     }
 
+    getState() {
+        let { mode, viewport, portrait } = this.state;
+        return {
+            mode: mode,
+            viewport: {
+                height: viewport.height,
+                width: viewport.width
+            },
+            portrait: portrait
+        };
+    }
+
     setDefaultConfig(mode, config) {
         let newState = {
             mode: mode,
@@ -133,8 +145,9 @@ export default class LayoutTester extends Component {
             },
             portrait: config.portrait || this.state.portrait
         };
-        this.setState(newState);
-        this.listeners.forEach(listener => listener(newState));
+        this.setState(newState, () => {
+            this.listeners.forEach(listener => listener(this.getState()));
+        });
     }
 
     handleSelection(mode, portrait) {
@@ -150,10 +163,11 @@ export default class LayoutTester extends Component {
         };
         this.setState(newState, () => {
             if (this.props.viewportChanged) {
-                this.props.viewportChanged(newState);
+                this.props.viewportChanged(this.getState());
             }
+            this.listeners.forEach(listener => listener(this.getState()));
         });
-        this.listeners.forEach(listener => listener(newState));
+        
     }
 
     handleRotate() {

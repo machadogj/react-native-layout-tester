@@ -18,17 +18,17 @@ export default function getLayout(mapLayoutToProps = defaultMapLayoutToProps, op
             static displayName = `GetLayout(${getDisplayName(WrappedComponent)})`;
 
             static contextTypes = {
-                layoutTesterState: PropTypes.object.isRequired,
-                subscribeLayout: PropTypes.func
+                getLayoutTesterState: PropTypes.func.isRequired,
+                subscribeLayout: PropTypes.func.isRequired
             };
 
-            state = this.context.layoutTesterState;
+            state = this.context.getLayoutTesterState();
             mergedProps = mergeProps(mapLayoutToProps(this.state), this.props);
 
             componentWillReceiveProps(nextProps, nextContext) {
-                let { layoutTesterState: state } = nextContext;
-                if (!this.unsubscribe && state) {
-                    this.mergedProps = mergeProps(mapLayoutToProps(state), nextProps);
+                let { getlayoutTesterState: getState } = nextContext;
+                if (!this.unsubscribe && getState) {
+                    this.mergedProps = mergeProps(mapLayoutToProps(getState()), nextProps);
                 } else {
                     this.mergedProps = mergeProps(this.mergedProps, nextProps);
                 }
