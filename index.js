@@ -179,7 +179,7 @@ export default class LayoutTester extends Component {
         let selected = this.state.mode === mode ? styles.selectedButton : {};
         return (
             <TouchableOpacity onPress={ ()=> this.handleSelection(mode, this.state.portrait) }>
-                <Text style={ [ styles.button, selected ] }>{ `${this.props.config[mode].label}\n(${deviceSize.width}x${deviceSize.height})` }</Text>
+                <Text style={ [ styles.button, selected ] }>{ `${this.props.config[mode].label}` }</Text>
             </TouchableOpacity>
         );
     }
