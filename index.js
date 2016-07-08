@@ -6,11 +6,10 @@ import {
     View
 } from "react-native";
 import shallowEqual from 'shallowequal';
-
+import LayoutProvider, { getLayout } from 'react-native-layout-provider';
 import styles from "./styles";
-import getLayout from './getLayout';
 
-export { getLayout };
+export { getLayout }
 
 export default class LayoutTester extends Component {
 
@@ -48,13 +47,6 @@ export default class LayoutTester extends Component {
         }
     };
 
-    static childContextTypes = {
-      getLayoutTesterState: PropTypes.func,
-      subscribeLayout: PropTypes.func
-    };
-
-    listeners = [];
-
     constructor(props) {
         super(props);
         if (props.noTestWrapConfig) {
@@ -72,30 +64,6 @@ export default class LayoutTester extends Component {
         } else {
             this.state = { portrait: true };
         }
-    }
-
-    getChildContext() {
-        return {
-            getLayoutTesterState: () => this.getState(),
-            subscribeLayout: listener => {
-                if (typeof listener !== 'function') {
-                  throw new Error('Expected listener to be a function.');
-                }
-
-                let isSubscribed = true;
-
-                this.listeners.push(listener);
-
-                return () => {
-                    if (!isSubscribed) return;
-
-                    isSubscribed = false;
-
-                    let index = this.listeners.indexOf(listener);
-                    this.listeners.splice(index, 1);
-                }
-            }
-        };
     }
 
     componentWillReceiveProps(nextProps) {
@@ -124,18 +92,6 @@ export default class LayoutTester extends Component {
         this.setDefaultConfig(mode, config[mode]);
     }
 
-    getState() {
-        let { mode, viewport, portrait } = this.state;
-        return {
-            mode: mode,
-            viewport: {
-                height: viewport.height,
-                width: viewport.width
-            },
-            portrait: portrait
-        };
-    }
-
     setDefaultConfig(mode, config) {
         let newState = {
             mode: mode,
@@ -144,10 +100,8 @@ export default class LayoutTester extends Component {
                 width: config.width
             },
             portrait: config.portrait || this.state.portrait
-        };
-        this.setState(newState, () => {
-            this.listeners.forEach(listener => listener(this.getState()));
         });
+        this.setState(newState);
     }
 
     handleSelection(mode, portrait) {
@@ -163,11 +117,9 @@ export default class LayoutTester extends Component {
         };
         this.setState(newState, () => {
             if (this.props.viewportChanged) {
-                this.props.viewportChanged(this.getState());
+                this.props.viewportChanged(newState));
             }
-            this.listeners.forEach(listener => listener(this.getState()));
         });
-        
     }
 
     handleRotate() {
@@ -184,11 +136,7 @@ export default class LayoutTester extends Component {
         );
     }
 
-    render() {
-        if (this.props.noTestWrapConfig) {
-            return this.props.children;
-        }
-
+    renderLayoutTester() {
         let { viewport } = this.state;
         let buttons = Object.keys(this.props.config).map(k => {
             return (
@@ -214,6 +162,25 @@ export default class LayoutTester extends Component {
                     </TouchableOpacity>
                 </View>
             </View>
+        );
+    }
+
+    render() {
+        let children;
+        if (this.props.noTestWrapConfig) {
+            children = this.props.children;
+        } else {
+            children = this.renderLayoutTester();
+        }
+        return (
+            <LayoutProvider
+                label={ this.state.mode }
+                width={ this.state.viewport.width }
+                height={ this.state.viewport.height }
+                portrait={this.state.portrait }
+            >
+                { children }
+            </LayoutProvider>
         );
     }
 }
