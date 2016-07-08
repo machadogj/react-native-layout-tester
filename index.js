@@ -100,7 +100,7 @@ export default class LayoutTester extends Component {
                 width: config.width
             },
             portrait: config.portrait || this.state.portrait
-        });
+        };
         this.setState(newState);
     }
 
@@ -117,7 +117,7 @@ export default class LayoutTester extends Component {
         };
         this.setState(newState, () => {
             if (this.props.viewportChanged) {
-                this.props.viewportChanged(newState));
+                this.props.viewportChanged(newState);
             }
         });
     }
