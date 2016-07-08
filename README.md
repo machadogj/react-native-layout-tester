@@ -46,14 +46,16 @@ exclude this package by simply not importing it in any file.
 
 ## Reacting to changes in viewport
 
-You can make your styles re-calculate on viewport changes. In order to do this,
-you can use a decorator shipped in this module. The decorator will take changes
-in viewport and pass it through props to your wrapped components.
+This module makes use of the [react-native-layout-provider](https://github.com/jhen0409/react-native-layout-provider)
+to react to changes in viewports. You can make your styles re-calculate on
+viewport changes. In order to do this, you can use a decorator shipped in
+`react-native-layout-provider`. The decorator will take changes in viewport and
+pass it through props to your wrapped components.
 
 In your component's code, import the getLayout function.
 
 ```
-import { getLayout } from 'react-native-layout-tester';
+import { getLayout } from 'react-native-layout-provider';
 ```
 
 Then calculate the styles based on the newly added props:
@@ -105,6 +107,8 @@ class Container extends Component {
 
 export default getLayout(layout => layout)(Container);
 ```
+
+You can see more of `react-native-layout-provider` [here](https://github.com/jhen0409/react-native-layout-provider).
 
 ## Receiving dimensions props in production code
 
