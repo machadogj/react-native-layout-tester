@@ -251,3 +251,8 @@ class App extends Component {
 ## TODO
 
 - Haven't yet tested it in Android
+
+## Credits
+
+A special thanks to [@jhen0409](https://github.com/jhen0409) for his awesome
+contributions which led to his cool [react-native-layout-provider](https://github.com/jhen0409/react-native-layout-provider) package.
