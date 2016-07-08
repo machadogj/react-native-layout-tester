@@ -1,6 +1,6 @@
 {
   "name": "react-native-layout-tester",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Run your app in an iPad simulator and emulate different iPhone screen sizes to test your layouts",
   "main": "index.js",
   "scripts": {
