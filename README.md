@@ -7,7 +7,7 @@ Use an iPad to test your component's layout in different iPhone sizes.
 
 ## Installation
 
-```
+```bash
 npm install --save react-native-layout-tester
 ```
 
@@ -16,7 +16,7 @@ npm install --save react-native-layout-tester
 In order to test your entire app, first wrap your app in the LayoutTester
 (works with redux and Navigator as well).
 
-```
+```js
 import LayoutTester from "react-native-layout-tester";
     
     //...
@@ -54,28 +54,28 @@ pass it through props to your wrapped components.
 
 In your component's code, import the getLayout function.
 
-```
+```js
 import { getLayout } from 'react-native-layout-provider';
 ```
 
 Then calculate the styles based on the newly added props:
 
-```
+```js
 render() {
-    const { mode, viewport, portrait } = this.props;
+    const { label, viewport, portrait } = this.props;
     let style = ...
 ```
 
 Finally export your wrapped component.
 
-```
+```js
 export default getLayout(layout => layout)(Container);
 ```
 
 Here is a sample container component that adjusts the padding based on the
 width of the viewport.
 
-```
+```js
 import React, { Component } from 'react';
 import {
   StyleSheet,
@@ -119,7 +119,7 @@ testing interface.
 
 For example:
 
-```
+```js
   render() {
     return (
       <LayoutTester
@@ -156,7 +156,7 @@ want to pass to your wrapped components.
 
 You can pass whatever device screen sizes you need (useful for android sizes).
 
-```
+```js
     // these are not real measure!!!!
 
     render() {
@@ -193,7 +193,7 @@ You can pass whatever device screen sizes you need (useful for android sizes).
 Here is a slightly more complex example of how to use this prop to pass props
 to all the wrapped components.
 
-```
+```js
 import React, { Component, PropTypes } from "react";
 import { Platform, Dimensions } from "react-native";
 import LayoutTester from 'react-native-layout-tester';
